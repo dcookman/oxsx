@@ -1,5 +1,6 @@
+#!/usr/bin/env python
 from dependency   import Dependency, VALID_FIELDS
-from ConfigParser import ConfigParser
+from configparser import ConfigParser
 from SCons.Script import Split, Glob, Copy, File, Dir, Exit
 from platform import system
 from subprocess import check_call
@@ -15,21 +16,21 @@ def read_dependencies(filename):
             libs   = cparse.get(dep_name, "libs")
             cheads = cparse.get(dep_name, "check_headers")
         except KeyError:
-            print "Incomplete dependency spec for {0}, (needs libs & check_headers)".format(dep_name)
+            print("Incomplete dependency spec for {0}, (needs libs & check_headers)".format(dep_name))
         dependencies[dep_name] = Dependency(dep_name, libs, cheads)
     return dependencies
 
 def check_dependency(conf, dependency):
-    print "\nChecking {0} dependencies..".format(dependency.name)
+    print("\nChecking {0} dependencies..".format(dependency.name))
     for header in Split(dependency.check_headers):
         if not conf.CheckCXXHeader(header):
-            print('!! Cannot locate header {0} ...'.format(header))
+            print(('!! Cannot locate header {0} ...'.format(header)))
             Exit(0)
                 
     # check libs
     for lib in Split(dependency.libs):
         if not conf.CheckLib(lib):
-            print('!! Cannot locate library {0}'.format(lib))
+            print(('!! Cannot locate library {0}'.format(lib)))
             Exit(0)
         
 
@@ -46,8 +47,8 @@ def parse_user_config(filename, dependencies):
     cparse = ConfigParser()
     cparse.read(filename)
     for dep_name in cparse.sections():
-        if not dep_name in dependencies.keys():
-            print('!! user_config specifies unknown dependency "{0}"'.format(dep_name))
+        if not dep_name in list(dependencies.keys()):
+            print(('!! user_config specifies unknown dependency "{0}"'.format(dep_name)))
             Exit(0)
         
         # loop over options for that dependencies
@@ -55,13 +56,13 @@ def parse_user_config(filename, dependencies):
             if opt in VALID_FIELDS:
                 dependencies[dep_name].__setattr__(opt, cparse.get(dep_name, opt))
             else:
-                print "Unknown build option: {0} for dependency {1}".format(opt, dep_name)
+                print("Unknown build option: {0} for dependency {1}".format(opt, dep_name))
     
 def update_and_check_env(conf, dependencies):
     '''
     Update the build environment with the dependencies
     '''
-    for dep in dependencies.values():
+    for dep in list(dependencies.values()):
         if dep.header_path:
             conf.env.Append(CPPPATH = [dep.header_path])
         if dep.flags:

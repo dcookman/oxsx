@@ -1,4 +1,4 @@
-#!/bin/python
+#!/usr/bin/env python
 # SConscript responsible for setting up the build environment using the dependencies
 import buildhelp
 import platform

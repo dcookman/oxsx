@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 VALID_FIELDS = ["header_path", "lib_path", "flags", 
                 "build"]
 
