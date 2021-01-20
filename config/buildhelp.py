@@ -66,7 +66,7 @@ def update_and_check_env(conf, dependencies):
         if dep.header_path:
             conf.env.Append(CPPPATH = [dep.header_path])
         if dep.flags:
-            conf.env.Append(CFLAGS = [dep.flags])
+            conf.env.Append(CXXFLAGS = [dep.flags])
         if dep.libs:
             conf.env.Append(LIBS = Split(dep.libs))
         if dep.lib_path:
