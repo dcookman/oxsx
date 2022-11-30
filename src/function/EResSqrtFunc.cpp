@@ -31,7 +31,6 @@ void EResSqrtFunc::SetParameters(const ParameterDict& paraDict_) {
 ParameterDict EResSqrtFunc::GetParameters() const {
     ParameterDict d;
     d[fParamName] = fGradient;
-    std::cout << "Hi!\n";
     return d;
 }
 
